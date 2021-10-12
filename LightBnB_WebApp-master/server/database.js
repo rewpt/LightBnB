@@ -171,12 +171,7 @@ property.country, property.street, property.city, property.province, property.po
  `;
 
  return pool.query(queryString, queryParams)
- .then((res) => {
-   console.log(res.rows[0]);
-   return res.rows[0];
- })
- .catch((err) => {
-   console.log(err.message);
-   return err.message})
+ .then(res => res.rows[0])
+ .catch(err => err.message)
 }
 exports.addProperty = addProperty;
