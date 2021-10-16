@@ -22,26 +22,54 @@ $(() => {
     if (!isReservation) {
       clearListings();
     }
+
     // check for user login
     getMyDetails()
-    .then()
-    if (isReservation) {
-      $('.update-button').on('click', function() {
-        const idData = $(this).attr('id').substring(16);
-        getIndividualReservation(idData).then(data => {
-          views_manager.show("updateReservation", data);       
-        });
-      })
-      $('.delete-button').on('click', function() {
-        const idData = $(this).attr('id').substring(16);
-        console.log(`delete ${idData}`);          
-      })
-    }
-    for (const propertyId in properties) {
-      const property = properties[propertyId];
-      const listing = propertyListing.createListing(property, isReservation);
-      addListing(listing);
-    }
+    .then(() => {
+      for (const propertyId in properties) {
+        const property = properties[propertyId];
+        const listing = propertyListing.createListing(property, isReservation);
+        addListing(listing);
+      }
+      if (isReservation) {
+        $('.update-button').on('click', function() {
+          const idData = $(this).attr('id').substring(16);
+          getIndividualReservation(idData).then(data => {
+            views_manager.show("updateReservation", data);       
+          });
+        })
+        $('.delete-button').on('click', function(evt) {
+          const idData = $(this).attr('id').substring(16);
+          deleteReservation(idData).then(data => {
+            getAllListings().then(function( json ) {
+              propertyListings.addProperties(json.properties);
+              views_manager.show('listings');
+            })
+          })
+          console.log(`delete ${idData}`);          
+        })
+        $('.add-review-button').on('click', function() {
+          const idData = $(this).attr('id').substring(11);
+          console.log('idData: ', idData);
+          views_manager.show("newReview", idData);
+        })
+      }
+      setTimeout(() => {
+        $('.reserve-button').on('click', function() {
+          const idData = $(this).attr('id').substring(17);
+          views_manager.show('newReservation', idData);
+        })
+        $('.review_details').on('click', function() {
+          const idData = $(this).attr('id').substring(15);
+          getReviewsByProperty(idData).then(data => console.log(data));
+        })
+        $('.review_details').on('click', function() {
+          const idData = $(this).attr('id').substring(15);
+          views_manager.show('showReviews', idData);
+        })
+      }, 800)    
+    })
+
   }
   window.propertyListings.addProperties = addProperties;
 
