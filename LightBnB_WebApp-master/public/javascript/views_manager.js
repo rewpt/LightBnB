@@ -11,6 +11,8 @@ $(() => {
     $logInForm.detach();
     $signUpForm.detach();
     $newReservationForm.detach();
+    $newReviewForm.detach();
+    $updateReservationForm.detach();
 
     let dataTag = "";
 
@@ -33,22 +35,34 @@ $(() => {
       case 'newReservation':
         dataTag = `<h4>${data}</h4>`;
         $newReservationForm.appendTo($main);
+        $("#datatag").empty(); 
         $(dataTag).appendTo("#datatag");
         break;  
+      case 'newReview':
+        dataTag = `<h4>${data}</h4>`;
+        $newReviewForm.appendTo($main);
+        $("#datatag").empty();
+        $(dataTag).appendTo("#datatag");
+        break;
+      case 'showReviews':
+        getReviewsByProperty(data)
+        .then(reviews => propertyReviews.addReviews(reviews))
+        $propertyReviews.appendTo($main);
+        break;
       case 'updateReservation':
         // since we're getting more information here, we can include this in an extended data tag:
         dataTag = `
           <span id="datatag-reservation-id">${data.id}</span>
-          <span id="datatag-start-date">${data.start_date}</span>
-          <span id="datatag-end-date">${data.end_date}</span>
+          <span id="datatag-start-date">${moment.utc(data.start_date).format}</span>
+          <span id="datatag-end-date">${moment.utc(data.end_date).format}</span>
           <span id="datatag-property-id">${data.property_id}</span>
         `
-        
+
         const reservationDetails = `
           <div id="reservation-details">
             <h3>Reservation Details</h3>
-            <h4>Start date: ${moment(data.start_date).format("MMMM DD, YYYY")}</h4>
-            <h4>End date: ${moment(data.end_date).format("MMMM DD, YYYY")}</h4>
+            <h4>Start date: ${moment.utc(data.start_date).format("MMMM DD, YYYY")}</h4>
+            <h4>End date: ${moment.utc(data.end_date).format("MMMM DD, YYYY")}</h4>
           </div>
         `
         // if there's an error message we want to display that as well:
