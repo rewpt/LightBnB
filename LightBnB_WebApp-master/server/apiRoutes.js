@@ -52,7 +52,8 @@ module.exports = function(router, database) {
   })
 
   router.get('/reservations/:reservation_id', (req, res) => {
-    const reservationId = req.params.reservation_id;
+    const reservationId = `${req.params.reservation_id}`.replace(/ /g,'');
+    console.log('RESERVATION ID: ', reservationId);
     database.getIndividualReservation(reservationId)
     .then(reservation => res.send(reservation))
     .catch(e => {
@@ -83,7 +84,31 @@ module.exports = function(router, database) {
 
   router.delete('/reservations/:reservationId', (req, res) => {
     const reservationId = req.params.reservationId;
-    database.deleteReservation(reservationId);
+    
+    database.deleteReservation(reservationId)
+    .then(() => {
+      res.send("Ok")
+    });
+  })
+
+  router.get('/reviews/:propertyId', (req, res) => {
+    const propertyId = req.params.propertyId
+    database.getReviewsByProperty(propertyId)
+    .then(reviews => {
+      res.send(reviews);
+    })
+  })
+
+  router.post('/reviews/:reservationId', (req, res) => {
+    const userId = req.session.userId;
+    if (!userId) {
+      res.send({message: "not logged in"});
+      return;
+    }
+    database.addReview({...req.body, guest_id : userId})
+    .then(review => {
+      res.send(review);
+    })
   })
 
   return router;
