@@ -17,16 +17,20 @@ $(() => {
           ${isReservation ? 
             `<p>${moment(property.start_date).format('ll')} - ${moment(property.end_date).format('ll')}</p>` : `<button id="reserve-property-${property.id}" class="reserve-button">Reserve</button>`}
           <footer class="property-listing__footer">
-            <div class="property-listing__rating">${Math.round(property.average_rating * 100) / 100}/5 stars</div>
+          ${console.log('property average rating: ', property.average_rating)}
+            <div class="property-listing__rating">${Math.round(property.average_rating ? property.average_rating : 0)} /5 stars</div>
             <div class="property-listing__price">$${property.cost_per_night/100.0}/night</div>
             ${isReservation.upcoming ? 
-              `<button id="update-property-${property.id} class="update-button">Update</button>
-                <button id="delete-property-${property.id} class="delete-button">Delete</button>
+              `<button id="update-property-${property.id}" class="update-button">Update</button>
+                <button id="delete-property-${property.id}" class="delete-button">Delete</button>
               ` : ``
             }
-            <span id="review-details-${property.id}" class="review_details">
+            ${(isReservation && !isReservation.upcoming) ? 
+              `<button class = "add-review-button" id="add-review-${property.id}">Add a Review</button>` : ``
+            } 
+            ${!isReservation ? `<span id="review-details-${property.id}" class="review_details">
               Browse ${property.review_count} reviews
-            </span>
+            </span>` : ``}
           </footer>
         </section>
       </article>
